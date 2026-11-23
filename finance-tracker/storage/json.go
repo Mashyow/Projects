@@ -2,6 +2,8 @@ package storage
 
 import (
 	"encoding/json"
+
+	"errors"
 	"myproject/finance-tracker/finance"
 	"os"
 	"time"
@@ -61,9 +63,16 @@ func (s *JSONStorage) Save(transactions []finance.Transaction) error {
 }
 
 func (s *JSONStorage) Load() (transactions []finance.Transaction, err error) {
+
+	emptyTransactions := []finance.Transaction{}
+
 	data, err := os.ReadFile(s.filePath)
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return emptyTransactions, nil
+		}
 		return nil, err
+
 	}
 
 	var dtos []transactionDTO

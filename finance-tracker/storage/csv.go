@@ -2,6 +2,7 @@ package storage
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"io"
 	"myproject/finance-tracker/finance"
@@ -21,13 +22,20 @@ func NewCSVStorage(filePath string) *CSVStorage {
 	return csvStorage
 }
 
-func (s *CSVStorage) Save(transactions []finance.Transaction) error {
+func (s *CSVStorage) Save(transactions []finance.Transaction) (err error) {
 
 	file, err := os.Create(s.filePath)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		closeErr := file.Close()
+
+		if err == nil {
+			err = closeErr
+		}
+	}()
+
 	writer := csv.NewWriter(file)
 	if err := writer.Write([]string{
 		"ID",
@@ -63,13 +71,24 @@ func (s *CSVStorage) Save(transactions []finance.Transaction) error {
 	return nil
 }
 
-func (s *CSVStorage) Load() ([]finance.Transaction, error) {
+func (s *CSVStorage) Load() (transactions []finance.Transaction, err error) {
+
+	emptyTransactions := []finance.Transaction{}
 	file, err := os.Open(s.filePath)
 
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return emptyTransactions, nil
+		}
 		return nil, err
 	}
-	defer file.Close()
+	defer func() {
+		closeErr := file.Close()
+		if err == nil {
+			err = closeErr
+		}
+
+	}()
 
 	reader := csv.NewReader(file)
 
@@ -80,7 +99,7 @@ func (s *CSVStorage) Load() ([]finance.Transaction, error) {
 	}
 	_ = header
 
-	transactions := make([]finance.Transaction, 0)
+	transactions = make([]finance.Transaction, 0)
 
 	for {
 		record, err := reader.Read()

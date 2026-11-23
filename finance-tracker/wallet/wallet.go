@@ -1,7 +1,6 @@
 package wallet
 
 import (
-	"fmt"
 	"myproject/finance-tracker/finance"
 	"myproject/finance-tracker/storage"
 )
@@ -96,5 +95,5 @@ func (w *Wallet) RemoveTransaction(id int) error {
 		}
 
 	}
-	return fmt.Errorf("Транзакция не найдена")
+	return TransactionNotFoundError{ID: id}
 }
