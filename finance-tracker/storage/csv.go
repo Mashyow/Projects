@@ -2,9 +2,12 @@ package storage
 
 import (
 	"encoding/csv"
+	"fmt"
+	"io"
 	"myproject/finance-tracker/finance"
 	"os"
 	"strconv"
+	"time"
 )
 
 type CSVStorage struct {
@@ -59,3 +62,71 @@ func (s *CSVStorage) Save(transactions []finance.Transaction) error {
 
 	return nil
 }
+
+func (s *CSVStorage) Load() ([]finance.Transaction, error) {
+	file, err := os.Open(s.filePath)
+
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+
+	header, err := reader.Read()
+	if err != nil {
+
+		return nil, err
+	}
+	_ = header
+
+	transactions := make([]finance.Transaction, 0)
+
+	for {
+		record, err := reader.Read()
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			return nil, err
+		}
+		if len(record) != 6 {
+			return nil, fmt.Errorf("invalid CSV record: expected 6 columns, got %d", len(record))
+		}
+		id, err := strconv.Atoi(record[0])
+		if err != nil {
+			return nil, err
+
+		}
+
+		amount, err := strconv.ParseFloat(record[1], 64)
+		if err != nil {
+			return nil, err
+		}
+
+		date, err := time.Parse("2006-01-02", record[4])
+		if err != nil {
+			return nil, err
+		}
+
+		transaction, err := finance.NewTransaction(
+			id,
+			amount,
+			record[2],
+			record[3],
+			date,
+			record[5],
+		)
+		if err != nil {
+			return nil, err
+		}
+		transactions = append(transactions, *transaction)
+
+	}
+	return transactions, nil
+
+}
+
+var _ Storage = (*CSVStorage)(nil)
