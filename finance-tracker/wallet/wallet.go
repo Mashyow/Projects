@@ -62,10 +62,10 @@ func (w *Wallet) GetBalance() float64 {
 		amount := transaction.GetAmount()
 		transactionType := transaction.GetTransactionType()
 
-		if transactionType == "income" {
+		if transactionType == finance.TypeIncome {
 			balance += amount
 		}
-		if transactionType == "expense" {
+		if transactionType == finance.TypeExpense {
 			balance -= amount
 		}
 	}
@@ -73,20 +73,6 @@ func (w *Wallet) GetBalance() float64 {
 }
 
 // константы экспенсес
-func (w *Wallet) GetExpensesByCategory() map[string]float64 {
-	expenses := make(map[string]float64)
-
-	for _, transaction := range w.transactions {
-		transactionType := transaction.GetTransactionType()
-		category := transaction.GetCategory()
-		amount := transaction.GetAmount()
-		if transactionType == "expense" {
-			expenses[category] += amount
-		}
-
-	}
-	return expenses
-}
 
 func (w *Wallet) RemoveTransaction(id int) error {
 

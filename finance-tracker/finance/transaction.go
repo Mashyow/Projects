@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+const (
+	TypeIncome  = "income"
+	TypeExpense = "expense"
+)
+
 type Transaction struct {
 	id              int       //номер операции
 	amount          float64   //сумма операции
@@ -54,7 +59,7 @@ func (a *Transaction) SetCategory(category string) error {
 
 func (a *Transaction) SetTransactionType(transactionType string) error {
 	cleanType := strings.TrimSpace(transactionType)
-	if cleanType != "income" && cleanType != "expense" {
+	if cleanType != TypeIncome && cleanType != TypeExpense {
 		return fmt.Errorf("доход или расход!!!")
 	}
 	a.transactionType = cleanType
