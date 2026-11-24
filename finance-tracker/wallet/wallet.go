@@ -1,6 +1,7 @@
 package wallet
 
 import (
+	"fmt"
 	"myproject/finance-tracker/finance"
 	"myproject/finance-tracker/storage"
 )
@@ -35,6 +36,13 @@ type Wallet struct {
 }
 
 func (w *Wallet) AddTransaction(transaction finance.Transaction) error {
+
+	for _, existing := range w.transactions {
+		if existing.GetID() == transaction.GetID() {
+			return fmt.Errorf("Такой ID %d уже существует", transaction.GetID())
+		}
+	}
+
 	w.transactions = append(w.transactions, transaction)
 	err := w.Save()
 	if err != nil {
