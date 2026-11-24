@@ -29,7 +29,7 @@ func NewJSONStorage(filePath string) *JSONStorage {
 	return jsonStorage
 }
 
-func (s *JSONStorage) Save(transactions []finance.Transaction) error {
+func (s *JSONStorage) Save(transactions []finance.Transaction) (err error) {
 	dtos := make([]transactionDTO, 0)
 
 	for _, transaction := range transactions {
@@ -53,7 +53,14 @@ func (s *JSONStorage) Save(transactions []finance.Transaction) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		closeErr := file.Close()
+
+		if err == nil {
+			err = closeErr
+		}
+
+	}()
 
 	_, err = file.Write(data)
 	if err != nil {
