@@ -39,7 +39,7 @@ func (w *Wallet) AddTransaction(transaction finance.Transaction) error {
 
 	for _, existing := range w.transactions {
 		if existing.GetID() == transaction.GetID() {
-			return fmt.Errorf("Такой ID %d уже существует", transaction.GetID())
+			return fmt.Errorf("ID %d уже существует", transaction.GetID())
 		}
 	}
 
