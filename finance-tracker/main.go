@@ -81,7 +81,7 @@ func main() {
 			}
 			fmt.Println("ID", id, "Сумма", amount)
 
-			fmt.Println("Введите категорию транзакии:")
+			fmt.Println("Введите категорию транзакции:")
 
 			if !scanner.Scan() {
 				return
@@ -89,13 +89,15 @@ func main() {
 			category := scanner.Text()
 
 			fmt.Println("Введите тип транзакции")
+			fmt.Println("Доход", finance.TypeIncome)
+			fmt.Println("Расход", finance.TypeExpense)
 			if !scanner.Scan() {
 				return
 			}
 			transactionType := scanner.Text()
 			fmt.Println("Категория", category, "Тип транзакции", transactionType)
 
-			fmt.Println("Введите дату в формате ГГГГ-ММ-ДД :")
+			fmt.Println("Введите дату в формате: ГГГГ-ММ-ДД:")
 			if !scanner.Scan() {
 				return
 			}

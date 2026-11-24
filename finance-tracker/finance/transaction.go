@@ -12,12 +12,12 @@ const (
 )
 
 type Transaction struct {
-	id              int       //номер операции
-	amount          float64   //сумма операции
-	category        string    //категория
-	transactionType string    //доход или расход
-	date            time.Time //дата операции
-	comment         string    //коментарий
+	id              int
+	amount          float64
+	category        string
+	transactionType string
+	date            time.Time
+	comment         string
 }
 
 func (a Transaction) GetID() int {
@@ -60,7 +60,7 @@ func (a *Transaction) SetCategory(category string) error {
 func (a *Transaction) SetTransactionType(transactionType string) error {
 	cleanType := strings.TrimSpace(transactionType)
 	if cleanType != TypeIncome && cleanType != TypeExpense {
-		return fmt.Errorf("доход или расход!!!")
+		return fmt.Errorf("Доход или расход!!!")
 	}
 	a.transactionType = cleanType
 	return nil
