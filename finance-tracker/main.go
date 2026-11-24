@@ -167,6 +167,13 @@ func main() {
 			fmt.Println("Транзакция удалена")
 
 		case 5:
+			err = w.Save()
+			if err != nil {
+				fmt.Println("Ошибка сохранения", err)
+				return
+			}
+
+			fmt.Println("Данные сохранены. До свидания!")
 			return
 
 		default:
